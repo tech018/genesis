@@ -1,74 +1,69 @@
 import React from "react";
-import SwipeableViews from "react-swipeable-views";
-import { useTheme } from "@mui/material/styles";
-import { AppBar, Tabs, Tab, Typography, Box } from "@mui/material";
+import Webcam from "react-webcam";
+import { Grid, Avatar, Container } from "@mui/material";
+import { updatePhoto } from "../../store/application";
+import { useDispatch } from "react-redux";
+const videoConstraints = {
+  width: 500,
+  height: 500,
+  facingMode: "user",
+};
 
-function TabPanel(props) {
-  const { children, value, index, ...other } = props;
+const PhotoSetup = ({ photoSrc, setPhotoSrc }) => {
+  const dispatch = useDispatch();
+  const webcamRef = React.useRef(null);
+  const capture = React.useCallback(() => {
+    const imageSrc = webcamRef.current.getScreenshot();
+    setPhotoSrc(imageSrc);
+    dispatch(updatePhoto(imageSrc));
+  }, [webcamRef, setPhotoSrc, dispatch]);
 
   return (
-    <div
-      role="tabpanel"
-      hidden={value !== index}
-      id={`full-width-tabpanel-${index}`}
-      aria-labelledby={`full-width-tab-${index}`}
-      {...other}
-    >
-      {value === index && (
-        <Box sx={{ p: 3 }}>
-          <Typography>{children}</Typography>
-        </Box>
-      )}
+    <div>
+      <Container>
+        <Grid container spacing={2}>
+          <Grid item xs={6}>
+            <Webcam
+              audio={false}
+              height={300}
+              ref={webcamRef}
+              screenshotFormat="image/jpeg"
+              width={300}
+              style={{
+                borderRadius: "10px",
+                border: "5px solid #b9f6ca",
+                margin: "0px 0px 0px 130px",
+              }}
+              imageSmoothing={true}
+              videoConstraints={videoConstraints}
+            />
+          </Grid>
+          <Grid item xs={6}>
+            <Avatar
+              variant="square"
+              alt="Remy Sharp"
+              src={photoSrc}
+              sx={{
+                width: 300,
+                height: 300,
+                margin: "auto",
+                borderRadius: "10px",
+                border: "5px solid #b9f6ca",
+              }}
+            />
+          </Grid>
+          <Grid item xs={6}>
+            <button
+              style={{ color: "white", margin: "0px 10px 10px 205px" }}
+              className="MuiButtonBase-root MuiButton-root MuiButton-contained MuiButton-containedPrimary MuiButton-sizeMedium MuiButton-containedSizeMedium MuiButton-root MuiButton-contained MuiButton-containedPrimary MuiButton-sizeMedium MuiButton-containedSizeMedium css-k2rdow-MuiButtonBase-root-MuiButton-root"
+              onClick={capture}
+            >
+              Capture photo
+            </button>
+          </Grid>
+        </Grid>
+      </Container>
     </div>
-  );
-}
-
-function a11yProps(index) {
-  return {
-    id: `full-width-tab-${index}`,
-    "aria-controls": `full-width-tabpanel-${index}`,
-  };
-}
-
-const PhotoSetup = () => {
-  const [value, setValue] = React.useState(0);
-  const theme = useTheme();
-  const handleChange = (event, newValue) => {
-    setValue(newValue);
-  };
-
-  const handleChangeIndex = (index) => {
-    setValue(index);
-  };
-
-  return (
-    <Box sx={{ bgcolor: "background.paper", width: 500 }}>
-      <AppBar position="static">
-        <Tabs
-          value={value}
-          onChange={handleChange}
-          indicatorColor="secondary"
-          textColor="inherit"
-          variant="fullWidth"
-          aria-label="full width tabs example"
-        >
-          <Tab label="Upload Photo" {...a11yProps(0)} />
-          <Tab label="Camera" {...a11yProps(1)} />
-        </Tabs>
-      </AppBar>
-      <SwipeableViews
-        axis={theme.direction === "rtl" ? "x-reverse" : "x"}
-        index={value}
-        onChangeIndex={handleChangeIndex}
-      >
-        <TabPanel value={value} index={0} dir={theme.direction}>
-          Upload Photo
-        </TabPanel>
-        <TabPanel value={value} index={1} dir={theme.direction}>
-          Camera
-        </TabPanel>
-      </SwipeableViews>
-    </Box>
   );
 };
 

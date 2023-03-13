@@ -12,7 +12,7 @@ import {
 } from "@mui/material";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { applicationType, civilStatus, gender } from "../../constants/forms";
-import { applicationSchema } from "../../schema/applications";
+import { userInfoSchema } from "../../schema/applications";
 import FormHelperText from "@mui/material/FormHelperText/FormHelperText";
 import { updateUserSettings } from "../../store/application";
 import { useDispatch } from "react-redux";
@@ -24,7 +24,7 @@ const PersonalInfoForm = ({ reference, setActiveStep, activeStep }) => {
     handleSubmit,
     formState: { errors },
   } = useForm({
-    resolver: yupResolver(applicationSchema),
+    resolver: yupResolver(userInfoSchema),
   });
 
   function isObjEmpty(obj) {
@@ -45,7 +45,7 @@ const PersonalInfoForm = ({ reference, setActiveStep, activeStep }) => {
   }));
 
   return (
-    <Box component="form" noValidate sx={{ mt: 3 }} id="hook-form">
+    <Box component="form" noValidate sx={{ mt: 3 }}>
       <Grid container spacing={2}>
         <Grid item xs={4}>
           <TextField

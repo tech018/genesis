@@ -12,6 +12,15 @@ const initialState = {
     civilStatus: null,
     gender: null,
   },
+  applications: {
+    typeOfVehicle: null,
+    plateNumber: null,
+    companyName: null,
+    contactNo: null,
+    position: null,
+    address: null,
+  },
+  photoSetup: null,
 };
 
 export const applicationSlide = createSlice({
@@ -22,8 +31,17 @@ export const applicationSlide = createSlice({
       ...state,
       userSettings: action.payload,
     }),
+    updatePhoto: (state, action) => ({
+      ...state,
+      photoSetup: action.payload,
+    }),
+    updateApplication: (state, action) => ({
+      ...state,
+      applications: action.payload,
+    }),
   },
 });
 
-export const { updateUserSettings } = applicationSlide.actions;
+export const { updateUserSettings, updatePhoto, updateApplication } =
+  applicationSlide.actions;
 export default applicationSlide.reducer;

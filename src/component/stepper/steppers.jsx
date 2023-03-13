@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import {
   Box,
   Container,
@@ -9,30 +9,47 @@ import {
   Button,
   Typography,
 } from "@mui/material";
-import { useState } from "react";
 import PersonalInfo from "../forms/personalInfoForm";
 import PhotoSetup from "../forms/photoSetup";
+import { ApplicationForm, RequirementsForm } from "../forms";
 
 const steps = [
   "Account Settings",
   "Setup Picture",
-  "Requirements",
   "Application Form",
+  "Requirements",
   "Finish Setup",
 ];
 
-function getStepContent(step, refFrom, setActiveStep, activeStep) {
+function getStepContent({
+  step,
+  refFrom,
+  setActiveStep,
+  setPhotoSrc,
+  photoSrc,
+  applicationFormRef,
+}) {
   switch (step) {
     case 0:
       return (
         <PersonalInfo
           reference={refFrom}
           setActiveStep={setActiveStep}
-          activeStep={activeStep}
+          activeStep={step}
         />
       );
     case 1:
-      return <PhotoSetup />;
+      return <PhotoSetup setPhotoSrc={setPhotoSrc} photoSrc={photoSrc} />;
+    case 2:
+      return (
+        <ApplicationForm
+          reference={applicationFormRef}
+          activeStep={step}
+          setActiveStep={setActiveStep}
+        />
+      );
+    case 3:
+      return <RequirementsForm />;
     default:
       throw new Error("Unknown step");
   }
@@ -40,11 +57,22 @@ function getStepContent(step, refFrom, setActiveStep, activeStep) {
 
 const Steppers = () => {
   const [activeStep, setActiveStep] = useState(0);
-
+  const [photoSrc, setPhotoSrc] = useState(null);
   const refFrom = useRef();
+  const applicationFormRef = useRef();
 
   const handleNext = () => {
-    refFrom.current.submitForm();
+    switch (activeStep) {
+      case 0:
+        return refFrom.current.submitForm();
+      case 1:
+        return setActiveStep(photoSrc !== null ? activeStep + 1 : activeStep);
+      case 2:
+        return applicationFormRef.current.submitForm();
+      default:
+        throw new Error("Unknown step");
+    }
+
     // if (!formErrors) {
     //   setActiveStep(activeStep + 1);
     // }
@@ -80,7 +108,14 @@ const Steppers = () => {
           </React.Fragment>
         ) : (
           <React.Fragment>
-            {getStepContent(activeStep, refFrom, setActiveStep, activeStep)}
+            {getStepContent({
+              step: activeStep,
+              refFrom,
+              setActiveStep,
+              setPhotoSrc,
+              photoSrc,
+              applicationFormRef,
+            })}
             <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
               {activeStep !== 0 && (
                 <Button onClick={handleBack} sx={{ mt: 3, ml: 1 }}>

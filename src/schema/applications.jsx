@@ -1,7 +1,7 @@
 import * as yup from "yup";
 import moment from "moment/moment";
 
-export const applicationSchema = yup.object().shape({
+export const userInfoSchema = yup.object().shape({
   firstName: yup.string().required("First name is required"),
   middleName: yup.string(),
   lastName: yup.string().required("Last name is required"),
@@ -17,16 +17,11 @@ export const applicationSchema = yup.object().shape({
   gender: yup.string().required("Gender is required"),
 });
 
-// requiredString(msg, typeMsg).test("is-valid", (value) => {
-//   let isValid = true;
-//   if (value) {
-//     const bday = getBirthdateMinMax(relation);
-//     isValid = moment(value).isBetween(
-//       moment(bday.min),
-//       moment(bday.max),
-//       "days",
-//       "[]"
-//     );
-//   }
-//   return isValid;
-// });
+export const applicationSchema = yup.object().shape({
+  typeOfVehicle: yup.string().required("Type of Vehicle is required!"),
+  plateNumber: yup.string().required("Plate number is required!"),
+  companyName: yup.string(),
+  contactNo: yup.string(),
+  position: yup.string(),
+  address: yup.string(),
+});
